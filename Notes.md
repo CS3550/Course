@@ -23,3 +23,5 @@ To create threaded code:
 
 - Threads run in the background and the spawing thread doesn't wait for them to finish before moving on.
 - Thread that operate on the same memory can create unpredictable results. You need to *lock* operations that multiple threads might simultaneouly call.
+
+We created a simple example of threads and these gottchas in this folder: https://github.com/CS3550/Course/tree/master/simplethreads
