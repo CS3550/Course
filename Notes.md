@@ -127,6 +127,27 @@ Response Codes:
 - 5xx - Server error -- it's not you (browser), it's me (server). Usually, if you changed code and this starts appearing, you broke something (look for an exception).
 
 
+## Day 5 - Sever-side Rendering
+
+Real web sites have a technology stack. It often look like this: 
+
+- Operating System
+
+- Web Server
+
+- Static Content
+
+- Dynamic Content
+
+- Persistent Data (i.e. a database)
+
+In order to replicate this in a simple way, we first need to move the HTML code out of our java server and int separate HTML files. This is easy for static HTML files that will not change based on user input. But for pages that change dynamically, we need a way to read the HTML, identify what is dynamic, run code to generate that dynamic content and send it along as HTML.
+
+In the late 1990's into the early 2000's a common way to do this was with a LAMP stack. LAMP stands for Linux (OS), Apache (Web server), PHP (dynamic content), MySQL (database). This was what Facebook originally used when it started in 2004.
+
+For our inclass project, we'll use a simpler method for generating dynamic content and persistence (for now).
+
+
 ## The Sprint
 What to do in the Sprint
 
