@@ -147,6 +147,34 @@ In the late 1990's into the early 2000's a common way to do this was with a LAMP
 
 For our inclass project, we'll use a simpler method for generating dynamic content and persistence (for now).
 
+## Day 6 - CSS and Cryptohashes
+
+### CSS - CSS
+
+Cascading Style Sheets
+- Separates how things look (CSS) from what things say (HTML) and how things change (JS).
+- Enterprise projects often use CSS meta-languages, for example SCSS
+- name{} styles an element tag
+- .name{} styles a class, i.e. <tag class="name">
+- #name{} styles an id, i.e. <tag id="name">
+- You can also style inline, i.e. <ta style="">
+ 
+ ### Cryptohashes
+ 
+ Users often reuse passwords. If a hacker accesses a server's password database, they should access be able to see your password. If they do, they could assume that your email/password combination would work on other sites as well.
+ 
+ Cryptohashes protect against this and other security vulnerabilities.
+ 
+ Instead of storing your password, the server stores evidence about your password.  As a simple example, all passwords can be treated as numbers. The server could store whether or not your password "number" is ever or odd. When your log in, the server could compare the evenness of your supplied password to the stored evenness in the password database. Obviously this is a bad example because everyother password would have the correct evenness (often called parity), so it would be easy to guess a matching password. Modern crypto hashes are much more complicated.
+ 
+ Desired attributes of a cryptohash:
+ - Deterministic
+ - Irreversible
+ - Collision Avoidance
+ - Always the same length
+ - Salt
+ 
+
 
 ## The Sprint
 What to do in the Sprint
