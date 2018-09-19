@@ -174,6 +174,23 @@ Cascading Style Sheets
  - Always the same length
  - Salt
  
+ ## Day 7 - Career Fair & Encryption
+ 
+ ### Your career
+ 
+ Part of preparing for a job is using the technology usid in the workplace. A great way to know what used in the "wild" is the [Stakcoverflow survey](https://insights.stackoverflow.com/survey/2018#technology).  Among other things, the survey points out that the most common computer language is javascript. With that in the mind, we'll be using javascript for much of the rest of this class. If you want to learn javascript, I'd recommend the following resources:
+ - Google it
+ - Code Academy (the free version)
+ - W3schools
+ 
+ Using the same tutorial, you'll also find that the most popular IDE right now is Visual Studio Code, so we'll be using that in class as well.
+ 
+ Speaking of the workplace, take some time to polish up your resume. I'd recommend putting down in big, bold letters headers such as "Java - 2 years experence" for all the languages you know. Think back on every class you've taken at UNO-- you might be surprised how many big, bold headers you can come up with. If you can't decide which language to use at home for the sprint, use the stack overflow survey as you guide...it's a pretty good indicator of what people are using.
+ 
+ ### Encryption
+ 
+ Encryption is a huge part of the security aspect of communication networks, but encryption outdates the internet by millenia. We'll talk about the Caesar cipher in class, which is over two thousand years old. Attributed to Julius Caesar, the Caesar cipher  encrpyts plain text by taking each letter and moving it forward is the alphabet by three characters. For example, A becomes A->B->C->D, B becomes B->C->D->E, and C becomes C->D->E->F. Encrypting a simple work such as "cab" therefore would be encrypted as "fde".
+ 
 
 
 ## The Sprint
