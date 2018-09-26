@@ -191,6 +191,26 @@ Cascading Style Sheets
  
  Encryption is a huge part of the security aspect of communication networks, but encryption outdates the internet by millenia. We'll talk about the Caesar cipher in class, which is over two thousand years old. Attributed to Julius Caesar, the Caesar cipher  encrpyts plain text by taking each letter and moving it forward is the alphabet by three characters. For example, A becomes A->B->C->D, B becomes B->C->D->E, and C becomes C->D->E->F. Encrypting a simple work such as "cab" therefore would be encrypted as "fde".
  
+ ## Day 8 - jQuery & Assymetric Encryption
+ 
+ ### jQuery
+ 
+ Modern client-side javascript relies frequently on a library called jQuery. jQuery, among other things, makes is easy to query the DOM for specific elements, get their contents, and update their values. As this is standard practice in industry, we will be doing this in class. 
+ 
+ To use jQuery, include a script code that include jQuery. The best way to find this is to Google "jQuery cdn". This will lead you to jQuery's cdn page (https://code.jquery.com/) where you can choose between the uncompressed and minified versions. As with most js libraries, the uncompressed version provides code in a traditional, tab formatted, human-readable format. Minified, on the otherhand, is the same semantically, but has a smaller file size (and smaller download time) but is not human readable. Using special minifying algorithms, the code is shrunk by automatically remove white space, shrinking variable names, etc. Unless you want to read the code of the library, the minified version will usually suffice.
+ 
+ To use jQuery, to get the text of an element in HTML, simple call $("#id").val(), where id is the id of the element. To set the value of id, use $("#id").html(val).
+ 
+ ### Assymetric Encryption
+ 
+ The Caeser cipher is an example of assymetric encryption--the key used to cipher the plain text and the key used to decipher the cipher text are differeent. This is different from symmentric encryption where the key to cipher and decipher is the same. 
+ 
+ The Caeser cipher is easy to break using frequency analysis--look for the most common letter in the cipher text and assume that is an "e". By counting the difference between that letter and e, you know the key used to cipher the text.
+ 
+ To avoid this, you can cipher the text with a key of length more that one. In this case, the text is broken down in n sets, where n is the length of the key. Each set is ciphered with each letter of the key. In this case, letters in the plain text do not always map to the same letter in cipher text. This makes frequency analysis harder to do, but it is still not hard with a computer. By iterating over possible key lengths, a computer can deduce the key length by finding a key length where the frquency of cipher text letters matches the plain text language and then working backwards as with the Caesar cipher.
+ 
+ The one way to avoid frequency analysis is to use a "one-time pad". In this case, the key is as long as the plain text and is truly random. With a one-time pad there is no way to do frquency analysis as there is no statistical method of analysis available.
+ 
 
 
 ## The Sprint
