@@ -211,7 +211,25 @@ Cascading Style Sheets
  
  The one way to avoid frequency analysis is to use a "one-time pad". In this case, the key is as long as the plain text and is truly random. With a one-time pad there is no way to do frquency analysis as there is no statistical method of analysis available.
  
+ 
+ ## Day 9 - vueJS & Digital Signatures
+ 
+ ### Vue
+ 
+ One way to think about your goal as a programmer is to make your code **clear** and **concise**. If your code is clear, you can read it and so can the people who will work with your code. If your code is concise, it will be easier to debug and refactor. These two often go together with clear code being concise and vis versa.
+ 
+ In javascript, in recent years that have been several MVC libraries released that help make your js code and html much more clear and concise. Right now, the most popular ones are React and Angular. Both are very powerful and would be great to have on your resume. Unfortunately, they each have a little more of a learning curve than this class allows, so we will use a more recent library called vue (pronnounced view). Vue follows many of the same principles of React and Angular (specifically Angular) and will help you prepare to learn those languages. 
 
+### Digital Signatures
+
+For centuries people have used different techniques to prove that letters have come from the person from whom they claimed to come.
+Before general literacy, royalty proved that a letter was transcribed in their behalf by placing their seal on wax on the letter. As more and more people learned to read and write, people began signing their letters. With signatures, the thought was that since your signature was unique and known to the recipient, a fraudelent letter could be detected by the recipient.
+
+On the internet, the possibility for fraud is rampant. Since the recipient of a message only receives a series of bytes, it is easy to impersonate a message--hence the need for digital signatures.  This leads to to the need for assymetric encryption.
+
+With assymetric encryption there are two keys. Anything ciphered by one key can be deciphered by the other and vis versa.  On the internet, parties who want to exchange information securely need to both encrypt their conversation and assure the recipient that the message indeed came from them.  To do this, both parties generate a key pair. One of the keys they keep secret and call their "private" key. The other key they can safely share with anyone (specifically the other party) and is called their "public" key. With modern encryption algorithms, it is intractible to go from one key to its pair in a reasonable amount of time, so sharing a public key (in theory) doesn't mean an opponent can derive your private key.
+
+To digitally sign a message, the sender concatonates the plain text with the plain text encrypted with the senders private key. Anyone with the public key can decrypt the second half of the message. This does not provide any secrecy--in fact the ciphered text is already available as plain text. However, since only one person has the private key (the sender), the fact that deciphering the cipher text produced the plain text proves that the person who sent the message was indeed the real sender.
 
 ## The Sprint
 What to do in the Sprint
