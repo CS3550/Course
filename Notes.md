@@ -231,6 +231,33 @@ With assymetric encryption there are two keys. Anything ciphered by one key can 
 
 To digitally sign a message, the sender concatonates the plain text with the plain text encrypted with the senders private key. Anyone with the public key can decrypt the second half of the message. This does not provide any secrecy--in fact the ciphered text is already available as plain text. However, since only one person has the private key (the sender), the fact that deciphering the cipher text produced the plain text proves that the person who sent the message was indeed the real sender.
 
+#### Practical example from class
+
+
+
+- Client
+
+Plain Text: Put Money in my account
+
+Public Key: d
+
+Private Key: x
+
+Cipher Text: mrqjlkbvfkjvxzzlrkq
+
+Message to Server =>Put Money in my account+mrqjlkbvfkjvxzzlrkq
+
+- Server:
+
+Knows Client's public Key: d
+
+Plain Text: putmoneyinmyaccount
+
+Cipher Text: putmoneyinmyaccount
+
+Checks out!
+
+
 ## The Sprint
 What to do in the Sprint
 
