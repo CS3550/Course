@@ -257,6 +257,74 @@ Cipher Text: putmoneyinmyaccount
 
 Checks out!
 
+## Responsive CSS & SSL/TLS
+
+Today:
+-Download VS Code (if you want)
+-eventually we'll go to https://github.com/bricksSeeds/html.vuejs
+
+CSS Libraries
+- Bootstrap (Twitter)
+- Foundation
+- Skeleton
+
+We'll cover Vuetify
+
+Common themes across responsive layout libraries:
+- Repsonsive grid. A responsive grid changes the size of grid items based on breakpoints. Breakpoints are based on the size of the screen, roughly corresponding the the size of phones, tablets, small screens, wide screens, and huge screens.
+- Advanced components. HTML gives you some basic UI components (input fields, etc.), but they don't give you the rich set of components you are used to on most websites. A robust library will give you a solid component set that includes cards, etc. 
+
+
+
+New Technology:
+-Material
+-Vuetify
+-Catch us up on moden CSS
+
+-Cover SSL and TLS
+
+-The slides for today are on github already (fyi)
+
+
+
+--SSL/TLS (Secure Socket Layer/Transport Layer Security)
+
+Goals:
+1. Recipient knows the message came from sender and hasn't been changed.
+2. Sender and recipient know that no one else can read the message.
+
+Step:
+1. Use assymetric keys to establish communication
+2. Use symmetic encryption using a "one-time pad"
+
+Today we're focused on the first step.
+
+Signing->Method of guaranteeing that the message came from you and wasn't changed.
+
+Signing. 
+- Sender generates a public and private key. 
+- Encrypts message with priavte key. 
+- Send plain message with encrypted "signature"
+- Recipient can decipher signature to ensure authenticity.
+
+Encryption.
+- Sender enrypts message with recipients public key.
+- Sender sends cipher text.
+- No one can read message without recipients private key.
+- Recipient deciphers message.
+- Message was safely sent.
+
+Put it together:
+- Sender ciphers message with senders private key (signature).
+- Sender ciphers new message with recipient's public key.
+- No one can read the message but the recipient.
+- Recipient deciphers with recipient's private key.
+- Recipient ensures authenticity with sender's public key.
+
+3 Party Encryption.
+
+Key Authorities or Certificate Authorities -> See Slides under Encryption Repo.
+
 
 ## The Sprint
 What to do in the Sprint
