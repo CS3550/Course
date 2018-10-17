@@ -325,6 +325,94 @@ Put it together:
 
 Key Authorities or Certificate Authorities -> See Slides under Encryption Repo.
 
+# Day 10 - DHCP & NAT
+
+# Day 10
+
+
+### Connecting to the Internet (or how to send a letter)
+
+When you into a new apartment building, how do you find out your address when you move to an apartment building?
+- Ask your leasing office!
+-- What is your address?
+-- Where is the mailbox?
+
+When you connect to a network, your device:
+Does not have an IP address
+and 
+Does not know where to send its internet traffic.
+
+and it's a little more complicated....
+
+Because your device sends things IP addresses, but you (the user) only know domain names, like google.com
+
+The process of your device connecting to a network and figuring all this out is called DHCP (Dynamic Host Configuration Protocol)
+
+- We need the new device's IP address
+
+- IP address of where to send traffic (default gateway)
+
+- IP address of DNS resolution (DNS server)
+
+DHCP message exchange (DORA):
+
+- DHCP Request (new device)
+
+- Offer (from server)
+
+- Request politely (new device)
+
+- Accept (from server)
+
+[Compare to three year-old. Three year-old yells, "Give me that!" Dad says, "Ask nicely, say, Dad, can you give me that?" Three year old, "Dad, can you give me that?" Dad says, "Sure."]
+
+The IP addresses offered from the server are actually called a "lease".
+
+On windows, you can see your "lease" by tying ipconfig /all
+
+### Variations
+
+If you are on a known network, your device might jump right to the Request phase.
+
+### What can go wrong
+
+The distributed nature of networks opens up the DHCP exchange to rogue DHCP servers.
+
+How do you know if it's the right DHCP server? A rogue server could give you a bad DNS server that server you phising sites.
+
+
+
+### NAT
+
+Problems:
+
+- There are not enough IP addresses in the world (IP address depletion)
+  - There are only 2^32 IPv4 address in the whole world.
+
+  - One solution is IPv6 
+
+
+- You  also want a firewall
+
+  - You want to block incoming traffic unless you've initiated communication
+
+  - You don't want a publically accessible IP address
+
+Enter NAT
+
+ - Your default gateway (i.e. your router) has a publically accessible IP address
+ 
+ - Your new device has a private address (192.168.*.*)
+ 
+ - When you send out traffic, your default gateway changes the IP address on your packet from 192.168.?.? to the default gateway's public IP and assigns a port number.
+ 
+- When the default gateway gets a response at that port, the default gateway "translates" the address back to 192.168.?.?
+
+
+
+
+### Subnets (if you behave yourselves and don't get me off telling stories about my kids)
+
 
 ## The Sprint
 What to do in the Sprint
