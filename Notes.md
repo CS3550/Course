@@ -408,10 +408,82 @@ Enter NAT
  
 - When the default gateway gets a response at that port, the default gateway "translates" the address back to 192.168.?.?
 
+# Day 11 - Transport Layer & Network Layer
+
+NAT - Network Address Translation
+ 
+## Transport Layer
+- Which port are we sending from, and which port are we sending to
+- Process to Process communication (socket to socket)
+ 
+We'll talk about two major protocols
+ 
+### UDP
+ 
+- Connectionless Protocol
+- Fault intolerant
+- Limited message size
+- One direction
+- "Fast" & light weight
+  - Streaming
+  - VOIP
+
+UDP Detail:
+
+4 items in its header:
+- Source port - 16 bits ... What is highest port number you can use? 65535.
+  - The first 1024 ports are reserved and special. Never use them. Unless you use them with Wisdom. i.e. 80, 443, etc.
+- Destination Port
+- Length is in bytes
+- [Usually Unused Checksum]
+ 
+### TCP
+ 
+- Connection-oriented Protocol
+- Fault Taulerant
+- Unlimited message size (stream)
+- Bidirectional (full duplex)
+- "Slower" & more redundant
+  - Accuracy is important
+  - Anything you "download"
+  
+TCP Steps:
+- Inital Handhake
+- Duplex communication
+- Signoff handshake
+ 
+Theme in TCP: Acknowledge everything
+ 
+TCP Header:
+- Flags: A flag is a bit that is either 0 or 1. 1 means the flag is on.
+- Source Port: 16 bits
+- Destination Port: 16 bits
+- Sequence Number: 32 bit number. Which number in my data to you is this. Starts at a random number
+- Acknowledge Number: 32 bits. How much has been received plus one bit. i.e. What the next byte of data would be.
+ 
+### Example TCP transmission 
+
+Creating by using wireshark to watch the interaction between our browser and example.com
+ 
+Initial Handshake:
+1. [SYN]
+2. [SYN,ACK]
+3. [ACK]
+4. Begin Transmission
+5. Acknowledge message
+6. HTML
+7. Favicon
+8. Not Found
+ 
+ 
+## A look at the server and reverse proxying
+ 
+Reverse Proxying
+- Security (firewall)
+- Load balancing (probably not for this class)
+- HTTPS downgrading (or stripping)
 
 
-
-### Subnets (if you behave yourselves and don't get me off telling stories about my kids)
 
 
 ## The Sprint
