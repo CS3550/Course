@@ -483,6 +483,139 @@ Reverse Proxying
 - Load balancing (probably not for this class)
 - HTTPS downgrading (or stripping)
 
+# Day 12 - DNS & IP
+
+## Business
+
+- No class next Wednesday :(
+
+## DNS
+
+Humans can memorize domain names, not IP addresses.
+
+There are multiple IP addresses for most domains and those IP addresses can change and they don't want you to memorize them.
+The server would prefer you to use the DNS system since it will direct you to the prefered server geographically, current state of the system, etc.
+
+### On the downside...
+
+"The internet" has to maintain a mapping of domain names to IP adrresses. This has to be constantly updating and geographically aware, etc.
+
+### DNS is a tree.
+
+TLD is the root
+
+TLD -> Top level domain
+
+- com
+- edu
+- net
+- gov
+
+First subdomain is what we often refer to as the domain
+
+- google
+- amazon
+- bing
+
+Subdomain (second subdomain)
+
+- aws (amazon.com)
+
+When you need to look up a domain names (DNS query):
+
+### Theory
+
+- Your computer knows who is the "Authority" for all TLDs (roots)
+- Query that server for the domain name
+- Ones of several things will happen:
+  - The server will provide the answer directly
+  - The server will tell you who to ask next (starting a recursive call)
+  - The server will do the recursive call for you
+
+Problems!
+
+What's going to happen to the .com server? Way to many requests!
+
+Solutions:
+
+Caching (Temporarily stored in memory for faster retrieval later.)
+
+Most DNS answers are  non-authoritative answers from cached servers.
+- Problem: it takes a long time to propogate DNS changes through this cache.
+  - This is resolved by giving DNS records a TTL (time to live)
+  - /flushdns on ipconfig will save your life one day. Maybe.
+
+
+- DNS Security vulnerability
+  - Bad actors can provide bad cached dns records for phishing purposes.
+  - This has led to DNSSEC which are DNS cache records that are digigtally signed.
+
+## IPv4
+
+Internet Protocol
+
+- It provides network level to and from information
+- It also provides fragment information
+- And a few flags
+
+Strengths/Weaknesses
+- Short Protocol
+- Limited address space
+
+IPv4 was originally conceived to work like phone numbers in an area code + local number sense.
+
+IPv4 has 4 "octets" xxx.xxx.xxx.xxx, each octect is between 0 and 255. Each could be written as a two digit hex number FF or an 8 bit binary number.
+
+00000000.00000000.00000000.00000000
+
+Class A
+
+A server "owns" all IP addresses with the same first octet.
+
+This was intractible, we have more than 255 servers...
+
+This was followed up by Class B, C, etc.
+
+We now use lots of subnetting:
+
+Denotted by 
+xxx.xxx.xxx.xxx/yy where yy indicates the number of bits that are the same for all interfaces within the network.
+
+Most likely, your home network could be denoted by 192.168.0.0/24
+
+How this gets used:
+
+When your computer needs to send a packet not to itself, it needs to know if it should send it to the local network or the defualy gateway (the internet).
+
+-Your computer looks at the current subnet mask to determine what to do with a packet.
+
+- My lab computer right now has a mask of 255.255.252.0
+
+- In binary this is 11111111.11111111.11111100.0
+
+
+
+
+## IPv6
+
+Huge, huge address space
+
+Advantages it takes us back to the Area code + local number idea
+
+Implemented, first half of IPv6 adress is unique to a server
+
+Example IPv6 address
+
+2001:0db8:0000:0000:0000:ff00:0042:8329
+
+### IPv6 shortening
+
+Rules
+1. You can remove all leading 0's in an "octet"
+   - (using the above adrress) 2001:0db8:0:0:0:ff00:0042:8329
+2. You can replace consecutive "octets" of all 0s with :: (but only once in an address).
+  - For example, localhost in IPv6 is ::1. What's the full IPv6 of this?
+
 
 
 
