@@ -617,31 +617,75 @@ Rules
   - For example, localhost in IPv6 is ::1. What's the full IPv6 of this?
 
 
+# Day 13 - Cryptocurrency
 
 
-## The Sprint
-What to do in the Sprint
+## A Brief History of Money
 
--Work on the Java server code.
+- People were agrarian
 
--GitHub.com
+- People bartered
 
---Student Pack
+- People bartered with durable goods
 
---Digital Ocean Credits
+- People minted currency
 
----Spin up an Apache server
 
----Spin up a node Server
+### Checks (before electronic debit, electronic verification)
+- Proof with a check:
+   - Has all your id info on the check
+   - Prove it, validate with ID
 
--Namecheap get a domain. $.88 
+- Third parties
+   - Banks
+   - Government for IDs
 
--I will give a bunch of AWS credits
+- Problems with Checks:
+- You can lie
+- You can overdraft, spend the same dollar twice.
 
--Sign up for AWS - there area  lot of free things
+## Plastic
+- Proof with plastic:
+   - Pin / Signature
+   - Never carded
 
--Learn JS HTML CSS
+- Third parties
+   - Merchant's bank (gets a cut of the transaction ~1%)
+   - Customer's bank (gets a cut of the transaction ~1%)
+   - Card association network (get a miniscule, sub-penny fee)
+   - Government if ID required at transaction and to establish card accounts
 
--Anything else relevant
+- Benefits
+   - Money is put on hold to prevent overdrafting
+   - Banks guarantee payment to merchant, remove fraudulent changes for customer
+
+## Cryptocurrency
+
+- All currencies (post bartering in non-durable goods) require either face-to-face transactions or lots of identification (due to the third parties involved).
+
+- Can we create a currency where
+  - We can have full annominity in the transaction
+  - Replace a costly third party with a cheap third party
+
+### Key ideas
+
+- Each party has  an identifier-> public and private key pair.
+- There is a list of transactions (public ledger)
+   - Each transaction lists which public key spent money and whcih public keys received money
+   - Every party involved signs the transaction with their private key
+
+- How does the "merchant" party know that the "customer" party has the money and isn't double spending it?
+
+- Enter the blockchain. The blockchain has every transaction ever done.
+   - "Merchant" can see when money was put on a public key and when money was taken off, and thus the current "balance" on the public key.
+
+- Where does the money come from?
+  - Mining and our trusted third party.
+  - The block chain is composed of "block". Each is a set of transactions that are considered final. When a miner produces a block, they get a reward. The reward is the miner fee and new Bitcoin.
+  - To be included in the blockchain, its normal to include a small "mining fee" in your transaction.
+
+- Mining means finding a "nonce" that produces a hash with a certain characteristic for the given set of transactions and the previous block.
+
+
 
 
