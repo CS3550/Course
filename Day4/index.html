@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Communication Networks</title>
+  <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+
+    }
+
+    
+    .enter {
+      fill: green;
+    }
+
+    .update {
+      fill: #333;
+    }
+
+    .exit {
+      fill: brown;
+    }
+
+    a {
+      color: rgb(215, 25, 32);
+      /* Official red accent */
+    }
+
+    .flex_container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .flex_title {
+      background-color: black;
+      color: white;
+      flex: 0 0 50px;
+      text-transform: uppercase;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .flex_subtitle {
+      background-color: #BCBBBA;
+      flex: 0 0 35px;
+      font-family: "Times New";
+      padding: 5px;
+      font-size: 15px;
+    }
+
+    .image-container {
+      flex: 1 1 0;
+
+      /* Resize the background image to cover the entire container */
+    }
+
+    .flex_footer {
+      background-color: black;
+      flex: 0 0 35px;
+      color: white;
+      font-family: "Times New";
+      line-height: 35px;
+      padding: 5px;
+    }
+
+    .svgText {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .svg_container{
+      display:flex;
+     flex-direction:column;
+     height:100%;
+    }
+
+    .svg_content{
+      flex: 1 1 0;
+    }
+
+    
+  </style>
+</head>
+
+<body>
+  <div class="flex_container" id="app">
+    <div class="flex_title">
+      <div>Communication Networks <button onclick="goBack()">&lt;-</button> <button onclick="goForward()">-&gt;</button></div>
+    </div>
+   <div class="image-container">
+      <div id="vis" class="svg_container">
+      </div>  
+    </div>
+  </div>
+
+
+  <script>
+    // Extract the width and height that was computed by CSS.
+    var chartDiv = document.getElementById("vis");
+    var width = chartDiv.clientWidth;
+    var height = chartDiv.clientHeight;
+    let xml;
+    let data = [false, false, false, false];
+    let step = 2;
+    let groups = []
+    let mainG;
+
+    function goBack() {
+      step--;
+      if (step < 0)
+        step = 0;
+
+      update();
+    }
+
+    function goForward(){
+      step++;
+      if(step >= groups.length){
+        step = groups.length;
+      }
+      update();
+    }
+
+    // load the external svg from a file
+    //From: http://bl.ocks.org/catherinekerr/e345a906f8e2bae8d07dbc79f8f04036
+    d3.xml("Day4.svg", "image/svg+xml", function (in_xml) {
+      xml = in_xml;
+
+      
+
+      children = xml.childNodes[0].childNodes;//All the childern of the svg
+      let gs = [];
+      for(let i = 0; i < children.length; i++){
+        let child = children[i];
+        if(child.tagName == "g"){
+          groups.push(child.id);
+        }
+      }
+
+
+      mainG = d3.selectAll("div#vis")
+        .append("svg")
+        .attr("preserveAspectRatio", "xMidYMid meet") //See https://stackoverflow.com/questions/16265123/resize-svg-when-window-is-resized-in-d3-js
+        .attr("viewBox", "0 0 800 600")
+        .attr("class", "svg_content")
+        .each(function () {
+          let newNode = xml.getElementsByTagName("defs")[0].cloneNode(true);
+
+          //Handle an export bug from Illustrator where Arial Narrow is exported incorrectly as ArialNarrow
+          newNode.getElementsByTagName("style")[0].innerHTML = newNode.getElementsByTagName("style")[0].innerHTML.replace("ArialNarrow", "Arial Narrow");
+          this.appendChild(newNode);
+
+        })
+        .append("g")
+      //.attr("class", "mainG")
+      update();
+    });
+
+    function update() {
+      console.log(step);
+      data = [];
+      for (let i = 0; i < step && i < groups.length; i++) {
+        data.push(groups[i]);
+      }
+      updateData();
+    }
+
+    function updateData() {
+      console.log("Call to update");
+      console.log(xml);
+
+      var importedNode = document.importNode(xml.documentElement, true);
+
+      let g = mainG.selectAll(".mainG")
+        .data(data);
+
+      g.enter()
+        .append("g")
+        .attr("class", "mainG")
+        .attr("transform", "scale(1, 1)")
+        .append(function (d, i) {
+          return xml.getElementById(data[i]).cloneNode(true)
+        })
+
+      g.exit()
+      .remove();
+
+
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
