@@ -105,13 +105,13 @@
 
     <div class="image-container">
       <svg style="width:100%;height:100%;background-color:#636568" id="mySVG"></svg>
-      
+
 
     </div>
     <div class="flex_footer">
       This resource created by B. Ricks for UNO CSCS 3550.
     </div>
-    
+
   </div>
   <!--<div id='app' style="background-color:white">
 
@@ -122,7 +122,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"
     integrity="sha256-kzv+r6dLqmz7iYuR2OdwUgl4X5RVsoENBzigdF5cxtU=" crossorigin="anonymous"></script>
 
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.12.0/d3.js"
+    integrity="sha256-3BMRAc+yX0neFRvyfGGfd3aZK8NKwYTOzq93ubNY2iU=" crossorigin="anonymous"></script>
   <script>
 
     const actors = [
@@ -147,7 +149,7 @@
     let currentData = [];
     let currentIndex = 0;
 
-    
+
 
     const svg = d3.select('#mySVG');
     svg.attr("width", "100%")
@@ -175,34 +177,40 @@
 
       const mainGraphics = svg
         .selectAll('.mainGraphics')
-        .data(data.actors, d => d.name);
+        .data(data.actors, d => d.name)
+        .join(enter => {
+          enter = enter.append('g').attr('class', 'mainGraphics');
+          enter.append('text');
+          enter.append('path');
+          return enter;
+        })
+        
 
-      let g = mainGraphics
-        .enter()
-        .append('g')
-        .attr('class', 'mainGraphics');
-      g
-        .append('text')
-        .attr('class', 'mainGraphics')
+
+      mainGraphics
+        .selectAll('text')
+        .attr('class', 'mainGraphicsText')
         .text(d => d.name)
         .attr('y', 50)
-        .attr('x', (d, i) => {
-          return lineLocations[i];
+        .attr('x', function(d, i){
+          return lineLocations[d.index];
         })
         .attr('text-anchor', (d, i) => {
-          if (i == 0) {
+          if (d.index == 0) {
             return "start";
           }
-          if (i == data.actors.length - 1) {
+          if (d.index == data.actors.length - 1) {
             return "end";
           }
           return "middle";
         })
 
-      g
-        .append('path')
+
+
+      mainGraphics
+        .selectAll('path')
         .attr('d', (d, i) => {
-          return `M ${lineLocations[i] + 1} 60 L ${lineLocations[i] + 1} ${height}`;
+          return `M ${lineLocations[d.index] + 1} 60 L ${lineLocations[d.index] + 1} ${height}`;
         })
         .attr("stroke", "black")
         .attr("stroke-opacity", "1")
@@ -210,9 +218,7 @@
         .attr("fill", "none")
 
 
-      const arrows = svg
-        .selectAll('.arrows')
-        .data(data.arrows, d => d.time);
+
 
 
 
@@ -223,18 +229,31 @@
       let arrowHeadRadius = 10;
       function minX(d) { return Math.min(startX(d), endX(d)) };
 
-      const arrowG = arrows
-        .enter()
-        .append('g')
+
+      const arrowG = svg
+        .selectAll('.arrows')
+        .data(data.arrows, d => d.time)
+        .join(enter=>{
+          enter = enter.append('g');
+          let firstPath = enter.append('path');
+          firstPath.attr('class', 'firstPath');
+
+          let secondPath = enter.append('path');
+          secondPath.attr('class', 'secondPath');
+
+          let g = enter.append("g");
+          g.append("rect");
+          g.append("text");
+
+          return enter;
+        })
         .attr('class', 'arrows')
         .attr('transform', (d, i) => `translate(${minX(d)}, ${d.time * yOffset + 50 + 20})`);
 
-      arrows
-        .exit()
-        .remove();
+
 
       arrowG
-        .append('path')
+        .selectAll('.firstPath')
         .attr('d', (d, i) => {
           return `M ${startX(d) - minX(d)} ${startY} L ${endX(d) - minX(d)} ${endY}`;
         })
@@ -244,7 +263,7 @@
         .attr("fill", "none")
 
       arrowG
-        .append('path')
+        .selectAll('.secondPath')
         .attr('d', (d, i) => {
 
           //Do some trig to make an arrow head
@@ -272,7 +291,7 @@
         .attr("fill", "none")
 
       let toRotate = arrowG
-        .append('g')
+        .selectAll('g')
         .attr('class', 'toRotate')
         .attr('transform', (d, i) => {
           let dx;
@@ -297,7 +316,7 @@
         })
 
       toRotate
-        .append("rect")
+        .selectAll("rect")
         .attr('x', (d, i) => {
           return 20;
         })
@@ -314,7 +333,7 @@
         .attr("stroke", "black")
 
       toRotate
-        .append('text')
+        .selectAll('text')
         .attr('class', 'wrapText')
         .attr("alignment-baseline", "hanging")
         .attr('x', (d, i) => {
@@ -325,9 +344,12 @@
         })
         .text(d => d.desc)
         .style("font-size", function (d, i) {
-          //let g = this.getComputedTextLength();
+          let currentFontSize = 16;
+          if(this.style.fontSize){
+            currentFontSize = +this.style.fontSize.substr(0,this.style.fontSize.length-2);
+          }
           let r = (Math.max(startX(d), endX(d)) - 20 - (Math.min(startX(d), endX(d)) + 20) - 4) / this.getComputedTextLength();
-          return Math.min(16, r * 16);
+          return Math.min(16, r * currentFontSize);
         })
       /*.style("font-size", function(d) { 
         Math.max(startX(d), endX(d)) - 20 - (Math.min(startX(d), endX(d)) + 20)/ this.getComputedTextLength()
@@ -347,6 +369,7 @@
 
       for (let i = 0; i < actors.length; i++) {
         let actor = actors[i];
+        actor.index = i;
 
         map[actor.name] = i;
 
