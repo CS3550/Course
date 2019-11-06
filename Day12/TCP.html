@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/1db46cd8d9.js"></script>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Arial Narrow';
+      background-color: rgb(34, 34, 34);
+    }
+
+    text {}
+
+    .enter {
+      fill: green;
+    }
+
+    .update {
+      fill: #333;
+    }
+
+    .exit {
+      fill: brown;
+    }
+
+    a {
+      color: rgb(215, 25, 32);
+      /* Official red accent */
+    }
+
+    .flex_container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .flex_title {
+      background-color: black;
+      color: white;
+      flex: 0 0 50px;
+      text-transform: uppercase;
+      padding: 15px;
+      font-size: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    .flex_subtitle {
+      background-color: #BCBBBA;
+      flex: 0 0 35px;
+      font-family: "Times New";
+      padding: 5px;
+      font-size: 25px;
+      padding:15px;
+      color:black;
+    }
+
+    .image-container {
+      flex: 1 1 0;
+      background-color: #636568;
+      padding:15px;
+
+      /* Resize the background image to cover the entire container */
+    }
+
+    .flex_footer {
+      background-color: black;
+      flex: 0 0 35px;
+      color: white;
+      font-family: "Times New";
+      line-height: 35px;
+      padding: 15px;
+      font-size:20px;
+    }
+
+    .svgText {
+      font-family: 'Roboto', sans-serif;
+      font-size:25px;
+    }
+
+    .overlay {
+      opacity: 0.8;
+      background-color: #ccc;
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      z-index: 1000;
+      visibility: hidden;
+    }
+  </style>
+  <title>TCP</title>
+</head>
+
+<body>
+  <div class="flex_container" id="app">
+    <div class="flex_title">
+      <div>TCP</div>
+    </div>
+    <div class="flex_subtitle">
+      <button id="rewindCircle" onClick="rewind()"><i class="fas fa-angle-double-left"></i></button>
+      <button id="removeCircle" onClick="removeCircle()"><i class="fas fa-arrow-circle-left"></i></button>
+      <button id="addCircle" onClick="addCircle()"><i class="fas fa-arrow-circle-right"></i></button>
+      <button id="fastForward" onClick="fastForward()"><i class="fas fa-angle-double-right"></i></button>
+      <button id="addCircle" onClick="zoomIn()" style="margin-left:20px"><i class="fas fa-search-plus"></i></button>
+      <button id="fastForward" onClick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+      
+    </div>
+
+    <div class="image-container" id="imageContainer">
+      <svg style="width:100%;height:100%;background-color:#636568" id="mySVG"></svg>
+
+
+    </div>
+    <div class="flex_footer">
+      This resource created by B. Ricks for UNO CSCS 3550.
+    </div>
+
+  </div>
+  <!--<div id='app' style="background-color:white">
+
+</div>-->
+<script src="https://kit.fontawesome.com/07ccfb0264.js" crossorigin="anonymous"></script>
+  <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"
+    integrity="sha256-kzv+r6dLqmz7iYuR2OdwUgl4X5RVsoENBzigdF5cxtU=" crossorigin="anonymous"></script>
+
+  <!--<script src="https://d3js.org/d3.v4.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.12.0/d3.js"
+    integrity="sha256-3BMRAc+yX0neFRvyfGGfd3aZK8NKwYTOzq93ubNY2iU=" crossorigin="anonymous"></script>
+  <script>
+
+    let size = 50;
+
+    const actors = [
+      { name: "Sender" },
+      { name: "Receiver" },
+    ];
+
+    const allData = [
+      { from: "Sender", to: "Receiver", desc: "SYN" },
+      { from: "Receiver", to: "Sender", desc: "SYN + ACK" },
+      { from: "Sender", to: "Receiver", desc: "ACK" },
+      { from: "Receiver", to: "Sender", desc: "[Data transfer]" },
+      { from: "Sender", to: "Receiver", desc: "[Data transfer]" },
+      { from: "Sender", to: "Receiver", desc: "ACK + FIN" },
+      { from: "Receiver", to: "Sender", desc: "FIN + ACK" },
+      { from: "Sender", to: "Receiver", desc: "ACK" },
+      
+
+    ];
+    let currentData = [];
+    let currentIndex = 0;
+
+
+
+    const svg = d3.select('#mySVG');
+    svg.attr("width", "100%")
+    svg.attr("height", "100%")
+
+    //svg
+    //  .attr("preserveAspectRatio", "xMidYMid meet") //See https://stackoverflow.com/questions/16265123/resize-svg-when-window-is-resized-in-d3-js
+    //  .attr("viewBox", `0 0 ${width} ${height}`)
+
+
+    function plot(data, svg) {
+      const width = $("#mySVG").width();
+      const height = $("#mySVG").height()
+      const t = d3.transition()
+        .duration(1000)
+        .ease(d3.easeBack);
+
+      let lineLocations = [];
+      for (let i = 0; i < data.actors.length - 1; i++) {
+        lineLocations.push(i * width / (data.actors.length - 1));
+      }
+      lineLocations.push(width - 20);
+
+      yOffset = (height - 100) / allData.length;
+
+      const mainGraphics = svg
+        .selectAll('.mainGraphics')
+        .data(data.actors, d => d.name)
+        .join(enter => {
+          enter = enter.append('g').attr('class', 'mainGraphics');
+          enter.append('text');
+          enter.append('path');
+          return enter;
+        })
+        
+
+
+      mainGraphics
+        .selectAll('text')
+        .attr('class', 'mainGraphicsText')
+        .attr('font-size', '25px')
+        .attr('font-family', 'Arial Narrow')
+        .text(d => d.name)
+        .attr('y', 25)
+        .attr('x', function(d, i){
+          return lineLocations[d.index];
+        })
+        .attr('text-anchor', (d, i) => {
+          if (d.index == 0) {
+            return "start";
+          }
+          if (d.index == data.actors.length - 1) {
+            return "end";
+          }
+          return "middle";
+        })
+
+
+
+      mainGraphics
+        .selectAll('path')
+        .attr('d', (d, i) => {
+          return `M ${lineLocations[d.index] + 1} 60 L ${lineLocations[d.index] + 1} ${height}`;
+        })
+        .attr("stroke", "black")
+        .attr("stroke-opacity", "1")
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+
+
+
+
+
+
+      function startX(d) { return lineLocations[d.startIndex] };
+      let startY = 0;
+      function endX(d) { return lineLocations[d.endIndex] };
+      let endY = size;
+      let arrowHeadRadius = 10;
+      function minX(d) { return Math.min(startX(d), endX(d)) };
+
+
+      const arrowG = svg
+        .selectAll('.arrows')
+        .data(data.arrows, d => d.time)
+        .join(enter=>{
+          enter = enter.append('g');
+          let firstPath = enter.append('path');
+          firstPath.attr('class', 'firstPath');
+
+          let secondPath = enter.append('path');
+          secondPath.attr('class', 'secondPath');
+
+          let g = enter.append("g");
+          g.append("rect");
+          g.append("text");
+
+          return enter;
+        })
+        .attr('class', 'arrows')
+        .attr('transform', (d, i) => `translate(${minX(d)}, ${d.time * yOffset + 50 + 20})`);
+
+
+
+      arrowG
+        .selectAll('.firstPath')
+        .attr('d', (d, i) => {
+          return `M ${startX(d) - minX(d)} ${startY} L ${endX(d) - minX(d)} ${endY}`;
+        })
+        .attr("stroke", "black")
+        .attr("stroke-opacity", "1")
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+
+      arrowG
+        .selectAll('.secondPath')
+        .attr('d', (d, i) => {
+
+          //Do some trig to make an arrow head
+          //let dx = startX(d) - endX(d);
+          //let dy = startY - endY;
+          let dx = endX(d) - startX(d);
+          let dy = endY - startY;
+
+          let angle = Math.atan2(dy, dx);
+          let myAngle1 = angle + Math.PI / 8;
+          let myAngle2 = angle - Math.PI / 8;
+          let newX = Math.cos(myAngle1 + Math.PI) * arrowHeadRadius + endX(d) - minX(d);
+          let newY = Math.sin(myAngle1 + Math.PI) * arrowHeadRadius + endY;
+          let newX2 = Math.cos(myAngle2 + Math.PI) * arrowHeadRadius + endX(d) - minX(d);
+          let newY2 = Math.sin(myAngle2 + Math.PI) * arrowHeadRadius + endY;
+
+
+
+
+          return `M ${newX} ${newY} L ${endX(d) - minX(d)} ${endY} L ${newX2} ${newY2}`;
+        })
+        .attr("stroke", "black")
+        .attr("stroke-opacity", "1")
+        .attr("stroke-width", 2)
+        .attr("fill", "none")
+
+      let toRotate = arrowG
+        .selectAll('g')
+        .attr('class', 'toRotate')
+        .attr('transform', (d, i) => {
+          let dx;
+          if (endX(d) < startX(d)) {
+            dx = startX(d) - endX(d);
+          }
+          else {
+            dx = endX(d) - startX(d);
+          }
+          let dy;
+          if (endX(d) < startX(d)) {
+            dy = startY - endY;
+          }
+          else {
+            dy = endY - startY;
+          }
+
+          let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+          let centerX = (Math.max(startX(d), endX(d)) - 20 - (Math.min(startX(d), endX(d)) + 20)) / 2;
+          let centerY = (endY - startY - 2) / 2;
+          return `translate(${centerX} ${centerY}) rotate(${angle}) translate(-${centerX} -${centerY})`;
+        })
+
+      toRotate
+        .selectAll("rect")
+        .attr('x', (d, i) => {
+          return 20;
+        })
+        .attr('y', (d, i) => {
+          return startY + 1;
+        })
+        .attr('width', (d, i) => {
+          return Math.max(startX(d), endX(d)) - 20 - (Math.min(startX(d), endX(d)) + 20)
+        })
+        .attr('height', (d, i) => {
+          return endY - startY - 2;
+        })
+        .attr("fill", "white")
+        .attr("stroke", "black")
+
+      toRotate
+        .selectAll('text')
+        .attr('class', 'wrapText')
+        .attr("alignment-baseline", "hanging")
+        .attr('x', (d, i) => {
+          return 20 + 2;
+        })
+        .attr('y', (d, i) => {
+          return startY + 1 + 2;
+        })
+        .text(d => d.desc)
+        .style("font-size", function (d, i) {
+          let maxSize = size-2;
+          let currentFontSize = maxSize;
+          if(this.style.fontSize){
+            currentFontSize = +this.style.fontSize.substr(0,this.style.fontSize.length-2);
+          }
+          let r = (Math.max(startX(d), endX(d)) - 20 - (Math.min(startX(d), endX(d)) + 20) - 4) / this.getComputedTextLength();
+          return Math.min(maxSize, r * currentFontSize);
+        })
+      /*.style("font-size", function(d) { 
+        Math.max(startX(d), endX(d)) - 20 - (Math.min(startX(d), endX(d)) + 20)/ this.getComputedTextLength()
+        })*/
+
+
+
+
+
+    };
+
+    function processData() {
+      let toPlot = {};
+      toPlot.actors = actors;
+
+      let map = [];
+
+      for (let i = 0; i < actors.length; i++) {
+        let actor = actors[i];
+        actor.index = i;
+
+        map[actor.name] = i;
+
+      }
+
+      for (let i = 0; i < currentData.length; i++) {
+        let thisData = currentData[i];
+        thisData.time = i;
+        thisData.startIndex = map[thisData.from];
+        thisData.endIndex = map[thisData.to];
+      }
+
+      toPlot.arrows = currentData;
+
+
+
+
+
+      plot(toPlot, svg);
+    }
+    processData()
+    //plot(data, svg);
+
+
+
+
+    function addCircle() {
+      /*if (data.length < 5) data.push(1);
+      plot(data, svg);*/actors
+      currentIndex++;
+      if (currentIndex >= allData.length)
+        currentIndex = allData.length;
+      currentData = allData.slice(0, currentIndex);
+      processData()
+    }
+    function removeCircle() {
+      currentIndex--;
+      if (currentIndex < 0)
+        currentIndex = 0;
+      currentData = allData.slice(0, currentIndex);
+      processData();
+
+    }
+    function rewind(){
+      currentIndex = 0;
+      currentData = allData.slice(0, currentIndex);
+      
+      processData();
+    }
+    function fastForward(){
+      currentIndex = allData.length;
+      currentData = allData.slice(0, currentIndex);
+      
+      processData();
+    }
+
+    function zoomIn(){
+      size*=1.5;
+      processData();
+    }
+    function zoomOut(){
+      size/=1.5;
+      processData();
+    }
+    var ro = new ResizeObserver( entries => { 
+      processData()
+    });
+
+    ro.observe(document.querySelector("#imageContainer"));
+
+
+
+  </script>
+
+</body>
+
+</html>
